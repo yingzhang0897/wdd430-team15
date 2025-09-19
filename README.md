@@ -1,1 +1,4 @@
-# Adam Lind, Ying Zhang, Mario Meza
+# Adam Lind
+# MaRIO Meza Mancilla
+# Ying Zhang
+# Daniel Holguin
