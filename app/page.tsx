@@ -2,6 +2,7 @@ import Image from "next/image";
 import Button from "./components/Button";
 import Link from "next/dist/client/link";
 import ArtisanSpotlight from "./components/ArtisanSpotlight";
+import ProductCarousel from "./components/ProductCarousel";
 
 export default function Home() {
   return (
@@ -33,6 +34,10 @@ export default function Home() {
       {/* Artisan Spotlight Section */}
       <ArtisanSpotlight />
 
+      <div>
+        <h2 className="text-3xl font-bold my-15 text-center text-black">Featured Products</h2>
+        <ProductCarousel />
+      </div>
     </main>
   );
 }
