@@ -95,7 +95,7 @@ const ProductCarousel = () => {
                 From ${product.price}
               </p>
               <p className="text-center text-sm text-gray-500">
-                Crafted by {product.vendor}
+                Crafted by {product.artist}
               </p>
             </div>
           </Link>

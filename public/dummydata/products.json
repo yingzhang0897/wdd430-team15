@@ -5,7 +5,7 @@
     "description": "Description for Product 1",
     "price": 19.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist A"
+    "artist": "Artist A"
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "description": "Description for Product 2",
     "price": 29.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist B"
+    "artist": "Artist B"
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@
     "description": "Description for Product 3",
     "price": 39.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist C"
+    "artist": "Artist C"
   },
   {
     "id": 4,
@@ -29,7 +29,7 @@
     "description": "Description for Product 4",
     "price": 49.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist D"
+    "artist": "Artist D"
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@
     "description": "Description for Product 5",
     "price": 59.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist E"
+    "artist": "Artist E"
   },
   {
     "id": 6,
@@ -45,7 +45,7 @@
     "description": "Description for Product 6",
     "price": 69.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist F"
+    "artist": "Artist F"
   },
   {
     "id": 7,
@@ -53,7 +53,7 @@
     "description": "Description for Product 7",
     "price": 79.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist G"
+    "artist": "Artist G"
   },
   {
     "id": 8,
@@ -61,7 +61,7 @@
     "description": "Description for Product 8",
     "price": 89.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist H"
+    "artist": "Artist H"
   },
   {
     "id": 9,
@@ -69,7 +69,7 @@
     "description": "Description for Product 9",
     "price": 99.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist I"
+    "artist": "Artist I"
   },
   {
     "id": 10,
@@ -77,6 +77,6 @@
     "description": "Description for Product 10",
     "price": 109.99,
     "images": ["/images/placeholder1.jpg", "/images/placeholder2.jpg"],
-    "vendor": "Artist J"
+    "artist": "Artist J"
   }
 ]
