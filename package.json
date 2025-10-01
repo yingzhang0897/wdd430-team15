@@ -8,23 +8,28 @@
     "start": "next start"
   },
   "dependencies": {
+    "@prisma/client": "^6.16.2",
     "bcrypt": "^6.0.0",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
+    "pg": "^8.16.3",
     "postgres": "^3.4.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-slick": "^0.31.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/react-slick": "^0.23.13",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
+    "prisma": "^6.16.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
