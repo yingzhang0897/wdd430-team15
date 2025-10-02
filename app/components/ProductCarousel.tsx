@@ -67,7 +67,7 @@ const ProductCarousel = () => {
           <Link
             key={i}
             className="px-1"
-            href={`/shop/${product.id}`}
+            href={`/product/${product.id}`}
             onClick={(e) => {
               if (isDragging) e.preventDefault(); // prevent navigation if dragging
             }}
