@@ -100,7 +100,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="bg-gray-300 rounded-xl flex items-start justify-center pt-5 px-2 pb-4">
+    <div className="bg-red-300 rounded-xl flex items-start justify-center pt-5 px-2 pb-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-5">
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6 rounded-xl underline decoration-gray-800">
           Create Your Account
@@ -203,7 +203,7 @@ export default function RegisterPage() {
           </div>
 
           {/* User Type */}
-          <div>
+          {/*<div>
             <label htmlFor="user_type" className="block text-sm font-medium text-gray-700 mb-1">
               Choose account type
             </label>
@@ -218,7 +218,7 @@ export default function RegisterPage() {
               <option value="CLIENT">Client</option>
               <option value="SELLER">Seller</option>
             </select>
-          </div>
+          </div> */}
 
           {/* Submit Button */}
           <button

@@ -13,7 +13,7 @@ export default function LoginPage() {
         // Email field
         if (field === 'email') {
             const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-            return isValidEmail ? 'border-green-500' : 'border-red-500';
+            return isValidEmail ? 'border-green-500' : 'border-gray-500';
         }
         // password field
         if (field === 'password') return 'border-gray-300';
@@ -50,12 +50,13 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-600 px-4 py-12">
+    <main className="min-h-screen flex items-center justify-center bg-gray-600 px-4 py-12 mt-22 shadow-xl">
       <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h1> 
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
+          <label className='text-gray-800'>Email</label>
+           <input
             type="email"
             name="email"
             placeholder="Email Address"
@@ -65,7 +66,9 @@ export default function LoginPage() {
                     'email'
                 )} text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400`}
                 required
-            />
+          />
+          
+          <label className='text-gray-800'>Password</label>
           <input
             type="password"
             name="password"
@@ -76,7 +79,8 @@ export default function LoginPage() {
                     'password'
                 )} text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400`}
                 required
-            />
+          />
+          
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
