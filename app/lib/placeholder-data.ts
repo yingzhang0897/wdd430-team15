@@ -1,4 +1,5 @@
-import { randomUUID } from "crypto";
+const randomUUID = () => crypto.randomUUID?.() || Math.random().toString(36).substring(2, 10);
+
 // Demo users (buyers + sellers)
 const users = [
   {
