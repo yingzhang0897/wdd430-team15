@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 import {
 	Facebook,
 	Instagram,
@@ -19,10 +20,11 @@ export default function Header({
 }: {
 	forceDarkMode?: boolean
 }) {
-	const [openMenu, setOpenMenu] = useState<string | null>(null)
-	const [scrolled, setScrolled] = useState(false)
-	const [mobileOpen, setMobileOpen] = useState(false)
-	const pathname = usePathname()
+        const [openMenu, setOpenMenu] = useState<string | null>(null)
+        const [scrolled, setScrolled] = useState(false)
+        const [mobileOpen, setMobileOpen] = useState(false)
+        const pathname = usePathname()
+        const { data: session, status } = useSession()
 
 	// Check if we're on a seller page
 	const isSellerPage = pathname?.startsWith('/seller/')
@@ -148,7 +150,7 @@ export default function Header({
 					</div>
 
 					{/* Right Nav */}
-					<div className='flex items-center space-x-6'>
+                                        <div className='flex items-center space-x-6'>
 						{/* Locale Selector (Desktop) */}
 						<select
 							className={`hidden md:block text-xs border-none focus:ring-0 bg-transparent ${
@@ -162,12 +164,38 @@ export default function Header({
 							<option>UK (GBP £)</option>
 						</select>
 
-						{/* Account */}
-						<Link
-							href='/account'
-							className={`${linkBase} ${linkHover}`}>
-							<User className='inline h-5 w-5' />
-						</Link>
+                                                {/* Account */}
+                                                <div className='flex items-center space-x-2'>
+                                                        <User className={`${linkBase} h-5 w-5`} />
+                                                        {status === 'loading' ? (
+                                                                <span className={`${linkBase} text-sm`}>Loading…</span>
+                                                        ) : status === 'authenticated' ? (
+                                                                <>
+                                                                        {session?.user?.name && (
+                                                                                <span className={`${linkBase} text-sm hidden lg:inline`}>
+                                                                                        Hi, {session.user.name.split(' ')[0]}
+                                                                                </span>
+                                                                        )}
+                                                                        <Link
+                                                                                href='/dashboard/seller'
+                                                                                className={`${linkBase} ${linkHover} text-sm`}>
+                                                                                Dashboard
+                                                                        </Link>
+                                                                        <button
+                                                                                type='button'
+                                                                                onClick={() => signOut({ callbackUrl: '/' })}
+                                                                                className={`${linkBase} ${linkHover} text-sm`}>
+                                                                                Sign out
+                                                                        </button>
+                                                                </>
+                                                        ) : (
+                                                                <Link
+                                                                        href='/account/login'
+                                                                        className={`${linkBase} ${linkHover} text-sm`}>
+                                                                        Sign in
+                                                                </Link>
+                                                        )}
+                                                </div>
 
 						{/* Cart */}
 						<Link
@@ -177,8 +205,8 @@ export default function Header({
 						</Link>
 
 						{/* Mobile Hamburger */}
-						<button
-							className='md:hidden'
+                                                <button
+                                                        className='md:hidden'
 							onClick={() => setMobileOpen(true)}
 							aria-label='Open menu'>
 							<Menu className={`${linkBase} h-6 w-6`} />
