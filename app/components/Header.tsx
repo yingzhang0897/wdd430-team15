@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import {
 	Facebook,
 	Instagram,
@@ -15,14 +16,15 @@ import {
 } from 'lucide-react'
 
 export default function Header({
-	forceDarkMode = false
+        forceDarkMode = false
 }: {
-	forceDarkMode?: boolean
+        forceDarkMode?: boolean
 }) {
-	const [openMenu, setOpenMenu] = useState<string | null>(null)
-	const [scrolled, setScrolled] = useState(false)
-	const [mobileOpen, setMobileOpen] = useState(false)
-	const pathname = usePathname()
+        const [openMenu, setOpenMenu] = useState<string | null>(null)
+        const [scrolled, setScrolled] = useState(false)
+        const [mobileOpen, setMobileOpen] = useState(false)
+        const pathname = usePathname()
+        const { data: session } = useSession()
 
 	// Check if we're on a seller page
 	const isSellerPage = pathname?.startsWith('/seller/')
@@ -163,11 +165,23 @@ export default function Header({
 						</select>
 
 						{/* Account */}
-						<Link
-							href='/account'
-							className={`${linkBase} ${linkHover}`}>
-							<User className='inline h-5 w-5' />
-						</Link>
+                                                <button
+                                                        type='button'
+                                                        onClick={() => {
+                                                                if (session?.user) {
+                                                                        void signOut({ redirectTo: '/' })
+                                                                } else {
+                                                                        void signIn('github', {
+                                                                                redirectTo: '/dashboard/seller'
+                                                                        })
+                                                                }
+                                                        }}
+                                                        className={`${linkBase} ${linkHover} flex items-center space-x-2`}>
+                                                        <User className='inline h-5 w-5' />
+                                                        <span className='hidden lg:inline text-sm font-medium'>
+                                                                {session?.user ? 'Sign out' : 'Sign in'}
+                                                        </span>
+                                                </button>
 
 						{/* Cart */}
 						<Link
@@ -236,7 +250,21 @@ export default function Header({
 							</details>
 
 							<Link href='/faqs'>FAQs</Link>
-							<Link href='/account'>Account</Link>
+                                                        <button
+                                                                type='button'
+                                                                onClick={() => {
+                                                                        if (session?.user) {
+                                                                                void signOut({ redirectTo: '/' })
+                                                                        } else {
+                                                                                void signIn('github', {
+                                                                                        redirectTo: '/dashboard/seller'
+                                                                                })
+                                                                        }
+                                                                        setMobileOpen(false)
+                                                                }}
+                                                                className='text-left'>
+                                                                {session?.user ? 'Sign out' : 'Sign in'}
+                                                        </button>
 							<Link href='/cart'>Cart (0)</Link>
 						</nav>
 
