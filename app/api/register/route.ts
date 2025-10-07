@@ -27,9 +27,7 @@
 // }
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import postgres from "postgres";
-
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+import sql from "@/app/lib/db";
 
 export async function POST(req: Request) {
   try {
