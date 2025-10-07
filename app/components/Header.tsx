@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { signOut, useSession } from 'next-auth/react'
 import {
 	Facebook,
 	Instagram,
@@ -19,10 +20,11 @@ export default function Header({
 }: {
 	forceDarkMode?: boolean
 }) {
-	const [openMenu, setOpenMenu] = useState<string | null>(null)
-	const [scrolled, setScrolled] = useState(false)
-	const [mobileOpen, setMobileOpen] = useState(false)
-	const pathname = usePathname()
+        const [openMenu, setOpenMenu] = useState<string | null>(null)
+        const [scrolled, setScrolled] = useState(false)
+        const [mobileOpen, setMobileOpen] = useState(false)
+        const pathname = usePathname()
+        const { data: session, status } = useSession()
 
 	// Check if we're on a seller page
 	const isSellerPage = pathname?.startsWith('/seller/')
@@ -163,11 +165,28 @@ export default function Header({
 						</select>
 
 						{/* Account */}
-						<Link
-							href='/account'
-							className={`${linkBase} ${linkHover}`}>
-							<User className='inline h-5 w-5' />
-						</Link>
+                                                {status === 'authenticated' ? (
+                                                        <button
+                                                                type='button'
+                                                                onClick={() => signOut({ redirectTo: '/' })}
+                                                                className={`${linkBase} ${linkHover} flex items-center gap-2`}
+                                                        >
+                                                                <User className='h-5 w-5' />
+                                                                {session?.user?.name && (
+                                                                        <span className='hidden lg:inline'>
+                                                                                {session.user.name}
+                                                                        </span>
+                                                                )}
+                                                                <span className='hidden md:inline'>Sign out</span>
+                                                        </button>
+                                                ) : (
+                                                        <Link
+                                                                href='/account/login'
+                                                                className={`${linkBase} ${linkHover} flex items-center gap-2`}>
+                                                                <User className='h-5 w-5' />
+                                                                <span className='hidden md:inline'>Sign in</span>
+                                                        </Link>
+                                                )}
 
 						{/* Cart */}
 						<Link
@@ -235,8 +254,26 @@ export default function Header({
 								</div>
 							</details>
 
-							<Link href='/faqs'>FAQs</Link>
-							<Link href='/account'>Account</Link>
+                                                        <Link href='/faqs'>FAQs</Link>
+                                                        {status === 'authenticated' ? (
+                                                                <button
+                                                                        type='button'
+                                                                        onClick={() => {
+                                                                                signOut({ redirectTo: '/' })
+                                                                                setMobileOpen(false)
+                                                                        }}
+                                                                        className='text-left'
+                                                                >
+                                                                        Sign out
+                                                                </button>
+                                                        ) : (
+                                                                <Link
+                                                                        href='/account/login'
+                                                                        onClick={() => setMobileOpen(false)}
+                                                                >
+                                                                        Sign in
+                                                                </Link>
+                                                        )}
 							<Link href='/cart'>Cart (0)</Link>
 						</nav>
 
