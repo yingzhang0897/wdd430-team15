@@ -1,13 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard/seller';
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -26,7 +21,7 @@ export default function LoginPage() {
     };
 
   const [errors, setErrors] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -36,27 +31,22 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors([]);
-    setIsSubmitting(true);
+    setSuccess(null);
 
-    const result = await signIn('credentials', {
-      email: formData.email,
-      password: formData.password,
-      redirect: false,
-      callbackUrl,
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
     });
 
-    setIsSubmitting(false);
+    const data = await res.json();
 
-    if (result?.error) {
-      setErrors([
-        result.error === 'CredentialsSignin'
-          ? 'Invalid email or password'
-          : result.error,
-      ]);
-      return;
+    if (!res.ok) {
+      setErrors(data.errors || ['Invalid email or password']);
+    } else {
+      setSuccess(data.message);
+      setFormData({ email: '', password: '' });
     }
-
-    router.push(result?.url ?? callbackUrl);
   };
 
   return (
@@ -89,10 +79,9 @@ export default function LoginPage() {
             />
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
           >
-            {isSubmitting ? 'Signing in…' : 'Login'}
+            Login
           </button>
         </form>
 
@@ -102,6 +91,10 @@ export default function LoginPage() {
               <p key={i}>• {err}</p>
             ))}
           </div>
+        )}
+
+        {success && (
+          <p className="mt-4 text-green-600 text-sm text-center">{success}</p>
         )}
 
         <p className="text-sm text-gray-600 text-center mt-6">
