@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Footer() {
   const [email, setEmail] = useState('email@example.com');
@@ -21,12 +22,12 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Quick links</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white transition-colors">Shop all</a></li>
+              <li><Link href="/products" className="hover:text-white transition-colors">Shop all</Link></li>
               <li><a href="#" className="hover:text-white transition-colors">About us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Refund Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Shipping Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/refund" className="hover:text-white transition-colors">Refund Policy</Link></li>
+              <li><Link href="/shipping" className="hover:text-white transition-colors">Shipping Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
 
@@ -104,7 +105,7 @@ export default function Footer() {
                   </svg>
                 </div>
               </div>
-              <p className="text-gray-300 text-sm">© 2025, Cottage Shop | Powered by Team 15</p>
+              <p className="text-gray-300 text-sm">© 2025, Handcrafts Cottage | Powered by Team 15</p>
             </div>
 
             {/* Right side - Payment logos */}

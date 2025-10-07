@@ -27,6 +27,7 @@ export default function Header({
 	// Check if we're on a seller page
 	const isSellerPage = pathname?.startsWith('/seller/')
 	const isDashboardPage = pathname?.startsWith('/dashboard/')
+	const isHome = pathname === '/' || pathname === ''
 
 	useEffect(() => {
 		const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -34,8 +35,9 @@ export default function Header({
 		return () => window.removeEventListener('scroll', handleScroll)
 	}, [])
 
-	// Use dark mode if: forced, on seller page, or scrolled
-	const useDarkMode = forceDarkMode || isSellerPage || isDashboardPage || scrolled
+	// Use dark mode (i.e. dark background with dark text) if: forced, NOT on the homepage, or scrolled
+	// This ensures header text is black on all non-home pages and remains black when scrolling on the homepage.
+	const useDarkMode = forceDarkMode || !isHome || isSellerPage || isDashboardPage || scrolled
 	const linkBase = useDarkMode ? 'text-gray-800' : 'text-white'
 	const linkHover = 'hover:text-green-600'
 
@@ -65,7 +67,7 @@ export default function Header({
 				className={`transition-colors ${
 					useDarkMode ? 'bg-white shadow' : 'bg-transparent'
 				} group`}>
-				<div className='container mx-auto flex items-center justify-between h-20 px-6'>
+				<div className='container relative mx-auto flex items-center justify-between h-20 px-6'>
 					{/* Left Nav (Desktop) */}
 					<nav className='hidden md:flex items-center space-x-6 text-sm font-medium relative'>
 						{/* Shop Dropdown */}
@@ -135,13 +137,13 @@ export default function Header({
 						</Link>
 					</nav>
 
-					{/* Logo */}
-					<div>
+					{/* Logo (centered) */}
+					<div className='absolute left-1/2 transform -translate-x-1/2'>
 						<Link href='/'>
 							<img
 								src='/images/logo.png'
 								alt='Logo'
-								className='logo_image mx-auto'
+								className='logo_image'
 								style={{ width: '110px' }}
 							/>
 						</Link>
