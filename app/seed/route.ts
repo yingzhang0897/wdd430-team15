@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import postgres from "postgres";
 import { sellers, products } from "../lib/placeholder-data";
- 
+import bcrypt from 'bcrypt';
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 export async function GET() {

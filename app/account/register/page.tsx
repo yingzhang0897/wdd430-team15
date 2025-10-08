@@ -1,22 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [error, setError] = useState('');
+
   const [formData, setFormData] = useState({
-    user_name: '',
-    user_email: '',
-    user_password: '',
+    name: '',
+    email: '',
+    password: '',
     confirmPassword: '',
-    user_type: 'CLIENT',
+    role: 'CLIENT',
   });
 
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
   const [touched, setTouched] = useState({
-    user_name: false,
-    user_email: false,
-    user_password: false,
+    name: false,
+    email: false,
+    password: false,
     confirmPassword: false,
   });
 
@@ -29,7 +33,7 @@ export default function RegisterPage() {
     }
   };
 
-  const isPasswordMatch = formData.user_password === formData.confirmPassword;
+  const isPasswordMatch = formData.password === formData.confirmPassword;
   const showPasswordError = touched.confirmPassword && !isPasswordMatch;
 
   const getBorderClass = (field: keyof typeof touched) => {
@@ -38,7 +42,7 @@ export default function RegisterPage() {
 
     if (!isTouched) return 'border-gray-300';
 
-    if (field === 'user_email') {
+    if (field === 'email') {
       const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
       return isValidEmail ? 'border-green-500' : 'border-red-500';
     }
@@ -56,7 +60,7 @@ export default function RegisterPage() {
     setSuccess(null);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.user_email)) {
+    if (!emailRegex.test(formData.email)) {
       setErrors(['Please enter a valid email address']);
       return;
     }
@@ -69,34 +73,34 @@ export default function RegisterPage() {
     const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_name: formData.user_name,
-        user_email: formData.user_email,
-        user_password: formData.user_password,
-        user_type: formData.user_type,
-      }),
+      body: JSON.stringify(formData),
     });
-
+    
     const data = await res.json();
 
     if (!res.ok) {
-      setErrors(data.errors || ['Something went wrong']);
+      setErrors(data.errors || ['Something went wrong, failed to register']);
+      return;
     } else {
       setSuccess(data.message || 'Registration successful!');
       setFormData({
-        user_name: '',
-        user_email: '',
-        user_password: '',
+        name: '',
+        email: '',
+        password: '',
         confirmPassword: '',
-        user_type: 'CLIENT',
+        role: 'buyer',
       });
       setTouched({
-        user_name: false,
-        user_email: false,
-        user_password: false,
+        name: false,
+        email: false,
+        password: false,
         confirmPassword: false,
       });
     }
+
+    
+    router.push('/account/login'); 
+   
   };
 
   return (
@@ -125,18 +129,18 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name */}
           <div>
-            <label htmlFor="user_name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Name
             </label>
             <input
               type="text"
-              id="user_name"
-              name="user_name"
-              value={formData.user_name}
+              id="name"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               placeholder="Team 15"
               className={`w-full px-4 py-2 rounded-md border ${getBorderClass(
-                'user_name'
+                'name'
               )} text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400`}
               required
             />
@@ -149,13 +153,13 @@ export default function RegisterPage() {
             </label>
             <input
               type="email"
-              id="user_email"
-              name="user_email"
-              value={formData.user_email}
+              id="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               placeholder="you@example.com"
               className={`w-full px-4 py-2 rounded-md border ${getBorderClass(
-                'user_email'
+                'email'
               )} text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400`}
               required
             />
@@ -163,18 +167,18 @@ export default function RegisterPage() {
 
           {/* Password */}
           <div>
-            <label htmlFor="user_password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
             <input
               type="password"
-              id="user_password"
-              name="user_password"
-              value={formData.user_password}
+              id="password"
+              name="password"
+              value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
               className={`w-full px-4 py-2 rounded-md border ${getBorderClass(
-                'user_password'
+                'password'
               )} text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400`}
               required
             />
