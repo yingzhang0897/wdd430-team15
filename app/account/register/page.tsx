@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -98,7 +100,12 @@ export default function RegisterPage() {
       });
     }
 
-    
+    await fetch('/api/send-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: formData.email, name: formData.name }),
+    });
+
     router.push('/account/login'); 
    
   };
@@ -106,8 +113,8 @@ export default function RegisterPage() {
   return (
     <div className="bg-red-300 rounded-xl flex items-start justify-center pt-5 px-2 pb-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-5">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6 rounded-xl underline decoration-gray-800">
-          Create Your Account
+        <h1 className="text-xl font-bold text-center text-gray-700 mb-6 rounded-xl underline decoration-gray-800">
+          Create Your Business Account
         </h1>
 
         {errors.length > 0 && (
@@ -225,11 +232,16 @@ export default function RegisterPage() {
           </div> */}
 
           {/* Submit Button */}
-          <button
+        
+
+           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition duration-200"
+            disabled={isLoading}
+            className={`w-full text-white py-2 rounded-md transition cursor-pointer ${
+              isLoading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
           >
-            Register
+            {isLoading ? 'Registering...' : 'Register'}
           </button>
         </form>
 

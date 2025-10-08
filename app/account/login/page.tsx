@@ -57,8 +57,8 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-600 px-4 py-12">
-      <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h1>
+      <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md mt-20">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">Sign In</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <label className="text-gray-800" htmlFor="email">Email</label>
