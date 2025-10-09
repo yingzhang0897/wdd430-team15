@@ -6,7 +6,7 @@ import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcryptjs';
 import postgres from 'postgres';
  
-export const sql = postgres(process.env.POSTGRES_URL!, {
+const sql = postgres(process.env.POSTGRES_URL!, {
   ssl: "require",
   prepare: false, //disable prepared statements to prevent cached plan errors
 });
