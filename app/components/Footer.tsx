@@ -23,7 +23,7 @@ export default function Footer() {
             <h3 className="text-white font-bold text-lg mb-4">Quick links</h3>
             <ul className="space-y-2">
               <li><Link href="/products" className="hover:text-white transition-colors">Shop all</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors">About us</a></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">About us</Link></li>
               <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link href="/refund" className="hover:text-white transition-colors">Refund Policy</Link></li>
               <li><Link href="/shipping" className="hover:text-white transition-colors">Shipping Policy</Link></li>
@@ -35,8 +35,8 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold text-lg mb-4">Quick links</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white transition-colors">Contact us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQs</a></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">Contact us</Link></li>
+              <li><Link href="/faq" className="hover:text-white transition-colors">FAQs</Link></li>
             </ul>
           </div>
 
