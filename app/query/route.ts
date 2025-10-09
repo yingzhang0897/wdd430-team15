@@ -20,7 +20,8 @@ async function listSellersWithProducts() {
 export async function GET() {
   try {
     const sellersWithProducts = await listSellersWithProducts();
-    return NextResponse.json({ sellers: sellersWithProducts });
+    const reviews = await sql`SELECT * FROM reviews`;
+    return NextResponse.json({ sellers: sellersWithProducts, reviews: reviews });
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
   }
