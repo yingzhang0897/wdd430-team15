@@ -158,7 +158,7 @@ export default function Header({
             </select>
 
             {/* Account */}
-            <Link href="/account" className={`${linkBase} ${linkHover}`}>
+            <Link href="/account/login" className={`${linkBase} ${linkHover}`}>
               <User className="inline h-5 w-5" />
             </Link>
 
@@ -216,7 +216,7 @@ export default function Header({
               </details>
 
               <Link href="/faqs">FAQs</Link>
-              <Link href="/account">Account</Link>
+              <Link href="/account/login">Account</Link>
               <Link href="/cart">Cart (0)</Link>
             </nav>
 
