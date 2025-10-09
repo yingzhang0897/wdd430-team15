@@ -6,7 +6,6 @@ import bcrypt from 'bcryptjs';
 import postgres from 'postgres';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
-import type { Role } from './definitions';
 import { signOut } from '@/auth';
 
 
@@ -102,7 +101,7 @@ export async function createUser(
   try {
     await sql`
       INSERT INTO users (id, name, email, password)
-      VALUES (${userId}, ${name}, ${email}, ${hashedPassword} })
+      VALUES (${userId}, ${name}, ${email}, ${hashedPassword})
     `;
 
     console.log(`User created: ${name}`);

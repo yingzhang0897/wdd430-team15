@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import postgres from "postgres";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { users, sellers, products, reviews } from "../lib/placeholder-data";
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+export const sql = postgres(process.env.POSTGRES_URL!, {
+  ssl: "require",
+  prepare: false, //disable prepared statements to prevent cached plan errors
+})
 
 export async function GET() {
   try {
