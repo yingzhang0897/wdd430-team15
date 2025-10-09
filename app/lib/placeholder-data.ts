@@ -179,7 +179,3 @@ const reviews = [
 ];
 
 export { users, sellers, products, reviews };
-
-
-
-
