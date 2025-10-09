@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useEffect} from "react";
+import React, {use, useEffect} from "react";
 
 interface Review {
   id: string;
@@ -9,81 +9,54 @@ interface Review {
   comment: string;
 }
 
-export default function ReviewsPage({params}: {params: {productId: string}}) {
-  // Some Next versions pass `params` as a Promise. Unwrap it with React.use(params)
-  // when available to stay forward compatible. Fall back to direct access.
-  const maybeUse = (React as any).use as ((p: any) => any) | undefined;
-  const resolvedParams = maybeUse ? maybeUse(params) : params;
-  const productId = resolvedParams?.productId ?? params?.productId ?? "";
+export default function ReviewsPage({ params }: { params: Promise<{ productId: string }> }) {
+    const { productId } = use(params);
 
-  const [seller, setSeller] = React.useState<any>(null);
   const [product, setProduct] = React.useState<any>(null);
-  const [reviews, setReviews] = React.useState<Review[]>([]);
+  const [reviews, setReviews] = React.useState<Review[]>([]);   
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
-useEffect(() => {
+  useEffect(() => {
     if (!productId) return;
     setLoading(true);
     setError(null);
 
     // Fetch reviews and product in parallel
     Promise.all([
-        fetch(`/api/reviews/${encodeURIComponent(productId)}`)
-            .then((response) => {
-                if (!response.ok)
-                    throw new Error(`Failed to fetch: ${response.status}`);
-                return response.json();
-            })
-            .then((data) => {
-                // Map DB response shape to our Review interface
-                if (!Array.isArray(data)) return [];
-                return data.map((r: any) => ({
-                    id: r.review_id ?? r.id ?? String(Math.random()),
-                    author: r.user_id ?? r.author ?? "User",
-                    rating: Number(r.rating ?? 0),
-                    comment: r.comment ?? r.comment_text ?? "",
-                }));
-            }),
-        fetch(`/api/products/${encodeURIComponent(productId)}`)
-            .then((response) => {
-                if (!response.ok)
-                    throw new Error(`Failed to fetch: ${response.status}`);
-                return response.json();
-            }),
-    ])
-        .then(([reviewsData, productData]) => {
-            setReviews(reviewsData);
-            setProduct(productData);
-
-            // Now fetch seller after product is set
-            if (productData?.seller_id) {
-                fetch(`/api/sellers/${encodeURIComponent(productData.seller_id)}`)
-                    .then((response) => {
-                        if (!response.ok)
-                            throw new Error(`Failed to fetch: ${response.status}`);
-                        return response.json();
-                    })
-                    .then((sellerData) => {
-                        setSeller(sellerData);
-                    })
-                    .catch((err) => {
-                        console.error("Failed to load seller:", err);
-                        setError(String(err));
-                    })
-                    .finally(() => setLoading(false));
-            } else {
-                setLoading(false);
-            }
+      fetch(`/api/reviews/${encodeURIComponent(productId)}`)
+        .then((response) => {
+          if (!response.ok)
+            throw new Error(`Failed to fetch: ${response.status}`);
+          return response.json();
         })
-        .catch((err) => {
-            console.error("Failed to load data:", err);
-            setError(String(err));
-            setReviews([]);
-            setProduct(null);
-            setLoading(false);
-        });
-}, [productId]);
+        .then((data) => {
+          // Map DB response shape to our Review interface
+          if (!Array.isArray(data)) return [];
+          return data.map((r: any) => ({
+            id: r.review_id ?? r.id ?? String(Math.random()),
+            author: r.user_id ?? r.author ?? "User",
+            rating: Number(r.rating ?? 0),
+            comment: r.comment ?? r.comment_text ?? "",
+          }));
+        }),
+      fetch(`/api/products/${encodeURIComponent(productId)}`).then(
+        (response) => {
+          if (!response.ok)
+            throw new Error(`Failed to fetch: ${response.status}`);
+          return response.json();
+        }
+      ),
+    ]).then(([reviewsData, productData]) => {
+      setReviews(reviewsData);
+      setProduct(productData);
+      setLoading(false);
+    }).catch((err) => {
+      console.error("Error loading reviews or product:", err);
+      setError("Failed to load reviews or product data.");
+      setLoading(false);
+    });
+  }, [productId]);
 
   return (
     <div className="pt-40 pb-20 min-h-screen bg-gray-50 pt-20">
