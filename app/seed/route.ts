@@ -3,7 +3,7 @@ import postgres from "postgres";
 import bcrypt from 'bcryptjs';
 import { users, sellers, products, reviews } from "../lib/placeholder-data";
 
-export const sql = postgres(process.env.POSTGRES_URL!, {
+const sql = postgres(process.env.POSTGRES_URL!, {
   ssl: "require",
   prepare: false, //disable prepared statements to prevent cached plan errors
 })
