@@ -16,9 +16,24 @@ export async function GET() {
     if (!sql) throw new Error("Database not connected");
 
     const products = await sql`SELECT * FROM products`;
-    return NextResponse.json(products);
+    
+    // Serialize the products data to handle PostgreSQL types
+    const serializedProducts = products.map(product => ({
+      product_id: product.product_id,
+      seller_id: product.seller_id,
+      name: product.name,
+      description: product.description,
+      price: product.price ? parseFloat(product.price.toString()) : 0,
+      stock: product.stock ? parseInt(product.stock.toString()) : 0,
+      category: product.category,
+      image_url: product.image_url,
+      created_at: product.created_at,
+      updated_at: product.updated_at
+    }));
+
+    return NextResponse.json(serializedProducts);
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 })
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })
   }
 }
 

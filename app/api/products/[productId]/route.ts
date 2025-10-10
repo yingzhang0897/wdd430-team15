@@ -21,13 +21,34 @@ export async function GET(
   }
 
   try {
-    const product =
+    const products =
       await sql`SELECT * FROM products WHERE product_id = ${productId}`;
-    return NextResponse.json(product[0]);
+    
+    if (!products || products.length === 0) {
+      return NextResponse.json({message: "Product not found"}, {status: 404});
+    }
+
+    const product = products[0];
+    
+    // Serialize the product data to handle PostgreSQL types
+    const serializedProduct = {
+      product_id: product.product_id,
+      seller_id: product.seller_id,
+      name: product.name,
+      description: product.description,
+      price: product.price ? parseFloat(product.price.toString()) : 0,
+      stock: product.stock ? parseInt(product.stock.toString()) : 0,
+      category: product.category,
+      image_url: product.image_url,
+      created_at: product.created_at,
+      updated_at: product.updated_at
+    };
+
+    return NextResponse.json(serializedProduct);
   } catch (error) {
     console.error("Database error:", error);
     return NextResponse.json(
-      {message: "Internal Server Error", error},
+      {message: "Internal Server Error", error: error instanceof Error ? error.message : 'Unknown error'},
       {status: 500}
     );
   }

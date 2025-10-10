@@ -6,6 +6,7 @@ import Link from "next/link";
 import {ArrowLeft, ShoppingCart, Package, Star} from "lucide-react";
 import StarRating from "@/app/components/StarRating";
 import {UUID} from "crypto";
+import type { Product } from "@/app/lib/definitions";
 
 // Mock product data
 const mockProducts = [
@@ -130,17 +131,6 @@ const mockProducts = [
     artist: "Sunrise Pottery",
   },
 ];
-
-interface Product {
-  product_id: UUID;
-  seller_id: UUID;
-  name: string;
-  description: string;
-  price: string;
-  stock: number;
-  category: string;
-  image_url: string;
-}
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -297,11 +287,11 @@ export default function ProductDetailPage() {
                 </h1>
 
                 <div className="flex items-center gap-4 mb-4">
-                  <StarRating productId={product.product_id} horizontal />
+                  <StarRating productId={product.product_id as UUID} horizontal />
                 </div>
 
                 <div className="text-4xl font-bold text-gray-900 mb-6">
-                  ${Number(product.price).toFixed(2)}
+                  ${(product.price || 0).toFixed(2)}
                 </div>
 
                 <p className="text-gray-700 leading-relaxed mb-6">
