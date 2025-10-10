@@ -31,8 +31,19 @@ export default function HeaderClient({
 
   const isHome = pathname === '/' || pathname === '';
   const useDarkMode = !isHome || scrolled;
-  const linkBase = useDarkMode ? 'text-gray-800' : 'text-white';
+  
+  // Force dark text on light backgrounds for better visibility
+  // Use dark text for all non-home pages or when scrolled
+  const linkBase = 'text-black font-bold';
   const linkHover = 'hover:text-green-600';
+  
+  // Inline styles with !important to override any conflicting CSS
+  const forceVisible: React.CSSProperties = {
+    color: '#000000',
+    fontWeight: 'bold',
+    textDecoration: 'none',
+    opacity: '1'
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -56,9 +67,8 @@ export default function HeaderClient({
 
       {/* Main Nav */}
       <div
-        className={`transition-colors ${
-          useDarkMode ? 'bg-white shadow' : 'bg-transparent'
-        } group`}
+        className="bg-white shadow-lg border-b border-gray-200 transition-all duration-300 group"
+        style={{backgroundColor: '#ffffff', zIndex: 9999}}
       >
         <div className="container relative mx-auto flex items-center justify-between h-20 px-6">
           {/* Left Nav (Desktop) */}
@@ -69,8 +79,8 @@ export default function HeaderClient({
               onMouseEnter={() => setOpenMenu('shop')}
               onMouseLeave={() => setOpenMenu(null)}
             >
-              <button className={`${linkBase} ${linkHover} flex items-center`}>
-                Shop <ChevronDown className="ml-1 h-4 w-4" />
+              <button className={`${linkBase} ${linkHover} flex items-center`} style={forceVisible}>
+                Shop <ChevronDown className="ml-1 h-4 w-4" style={{color: '#000000'}} />
               </button>
               {openMenu === 'shop' && (
                 <div className="absolute top-full left-0 w-screen bg-white shadow-lg p-6 grid grid-cols-3 gap-6 z-50">
@@ -79,13 +89,14 @@ export default function HeaderClient({
                       <Link
                         key={cat}
                         href={`/collections/${cat.toLowerCase()}`}
-                        className="hover:underline"
+                        className="text-gray-900 font-semibold hover:text-green-600 hover:underline"
+                        style={{color: '#000000', fontWeight: 'bold'}}
                       >
                         {cat}
                       </Link>
                     ))
                   ) : (
-                    <p className="text-gray-500 italic">No categories yet</p>
+                    <p className="text-gray-900 italic" style={{color: '#000000'}}>No categories yet</p>
                   )}
                 </div>
               )}
@@ -97,25 +108,25 @@ export default function HeaderClient({
               onMouseEnter={() => setOpenMenu('about')}
               onMouseLeave={() => setOpenMenu(null)}
             >
-              <button className={`${linkBase} ${linkHover} flex items-center`}>
-                About <ChevronDown className="ml-1 h-4 w-4" />
+              <button className={`${linkBase} ${linkHover} flex items-center`} style={forceVisible}>
+                About <ChevronDown className="ml-1 h-4 w-4" style={{color: '#000000'}} />
               </button>
               {openMenu === 'about' && (
                 <div className="absolute top-full left-0 w-screen bg-white shadow-lg p-6 grid grid-cols-3 gap-6 z-50">
-                  <Link href="/pages/discover" className="hover:underline">
-                    Discover Artisans
+                  <Link href="/about" className="text-gray-900 font-semibold hover:text-green-600 hover:underline" style={{color: '#000000', fontWeight: 'bold'}}>
+                    About Us
                   </Link>
-                  <Link href="/pages/contact-us" className="hover:underline">
+                  <Link href="/contact" className="text-gray-900 font-semibold hover:text-green-600 hover:underline" style={{color: '#000000', fontWeight: 'bold'}}>
                     Contact Us
                   </Link>
-                  <Link href="/pages/our-story" className="hover:underline">
-                    Our Story
+                  <Link href="/products" className="text-gray-900 font-semibold hover:text-green-600 hover:underline" style={{color: '#000000', fontWeight: 'bold'}}>
+                    Browse Products
                   </Link>
                 </div>
               )}
             </div>
 
-            <Link href="/faqs" className={`${linkBase} ${linkHover}`}>
+            <Link href="/faq" className={`${linkBase} ${linkHover}`} style={forceVisible}>
               FAQs
             </Link>
           </nav>
@@ -134,28 +145,29 @@ export default function HeaderClient({
 
           {/* Right Nav */}
           <div className="flex items-center space-x-6">
-            {/* Account */}
-            <Link href="/account/login" className={`${linkBase} ${linkHover}`}>
-              <User className="inline h-5 w-5" />
-            </Link>
+            {/* Account - Show Login/Logout based on session */}
+            {session?.user ? (
+              <form action={signOutAction}>
+                <button
+                  type="submit"
+                  className={`${linkBase} ${linkHover} flex items-center gap-1`}
+                  style={{color: '#000000', fontWeight: 'bold'}}
+                >
+                  <Power className="h-5 w-5" />
+                  <span>Logout</span>
+                </button>
+              </form>
+            ) : (
+              <Link href="/account/login" className={`${linkBase} ${linkHover} flex items-center gap-1`} style={{color: '#000000', fontWeight: 'bold'}}>
+                <User className="h-5 w-5" />
+                <span>Login</span>
+              </Link>
+            )}
 
             {/* Cart */}
-            <Link href="/cart" className={`${linkBase} ${linkHover} flex items-center`}>
+            <Link href="/cart" className={`${linkBase} ${linkHover} flex items-center`} style={{color: '#000000', fontWeight: 'bold'}}>
               <ShoppingBag className="h-5 w-5 mr-1" /> Cart (0)
             </Link>
-
-            {/* Sign Out if logged in */}
-           {session?.user && (
-                <form action={signOutAction}>
-                    <button
-                        type="submit"
-                        className="flex h-[48px] items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:p-2 md:px-3"
-                    >
-                        <Power className="w-5" />
-                        <div className="hidden md:block">Sign Out</div>
-                    </button>
-                </form>
-            )}
             
 
             {/* Mobile Hamburger */}
@@ -163,8 +175,9 @@ export default function HeaderClient({
               className="md:hidden"
               onClick={() => setMobileOpen(true)}
               aria-label="Open menu"
+              style={{color: '#000000'}}
             >
-              <Menu className={`${linkBase} h-6 w-6`} />
+              <Menu className={`${linkBase} h-6 w-6`} style={{color: '#000000'}} />
             </button>
           </div>
         </div>
@@ -207,34 +220,36 @@ export default function HeaderClient({
               <details>
                 <summary className="cursor-pointer">About</summary>
                 <div className="ml-4 flex flex-col gap-2">
-                  <Link href="/pages/discover" onClick={() => setMobileOpen(false)}>
-                    Discover Artisans
+                  <Link href="/about" onClick={() => setMobileOpen(false)}>
+                    About Us
                   </Link>
-                  <Link href="/pages/contact-us" onClick={() => setMobileOpen(false)}>
+                  <Link href="/contact" onClick={() => setMobileOpen(false)}>
                     Contact Us
                   </Link>
-                  <Link href="/pages/our-story" onClick={() => setMobileOpen(false)}>
-                    Our Story
+                  <Link href="/products" onClick={() => setMobileOpen(false)}>
+                    Browse Products
                   </Link>
                 </div>
               </details>
 
-              <Link href="/faqs" onClick={() => setMobileOpen(false)}>FAQs</Link>
-              <Link href="/account/login" onClick={() => setMobileOpen(false)}>Account</Link>
-              <Link href="/cart" onClick={() => setMobileOpen(false)}>Cart (0)</Link>
-
-              {/* Optional: Sign Out button for mobile */}
-            {session?.user && (
+              <Link href="/faq" onClick={() => setMobileOpen(false)}>FAQs</Link>
+              
+              {/* Account - Login/Logout for mobile */}
+              {session?.user ? (
                 <form action={signOutAction}>
-                    <button
-                        type="submit"
-                        className="flex h-[48px] items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:p-2 md:px-3"
-                    >
-                        <Power className="w-5" />
-                        <div className="hidden md:block">Sign Out</div>
-                    </button>
+                  <button
+                    type="submit"
+                    className="text-left text-gray-800 text-lg"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Logout
+                  </button>
                 </form>
-            )}
+              ) : (
+                <Link href="/account/login" onClick={() => setMobileOpen(false)}>Login</Link>
+              )}
+              
+              <Link href="/cart" onClick={() => setMobileOpen(false)}>Cart (0)</Link>
             </nav>
           </div>
         </div>

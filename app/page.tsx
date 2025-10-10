@@ -25,7 +25,7 @@ export default function Home() {
               goods
             </h1>
             <Button>
-              <Link href="/product">Shop Now</Link>
+              <Link href="/products">Shop Now</Link>
             </Button>
           </div>
         </div>

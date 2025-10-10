@@ -254,7 +254,7 @@ export default function ProductDetailPage() {
             </li>
             <li className="flex items-center">
               <span className="mx-2">/</span>
-              <Link href="/" className="hover:text-blue-600 transition-colors">
+              <Link href="/products" className="hover:text-blue-600 transition-colors">
                 Products
               </Link>
             </li>
