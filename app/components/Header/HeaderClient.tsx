@@ -97,7 +97,7 @@ export default function HeaderClient({
                     categories.map((cat) => (
                       <Link
                         key={cat}
-                        href={`/collections/${cat.toLowerCase()}`}
+                        href={`/products`}
                         className="text-gray-900 font-semibold hover:text-green-600 hover:underline"
                         style={{color: '#000000', fontWeight: 'bold'}}
                       >
@@ -214,7 +214,7 @@ export default function HeaderClient({
                     categories.map((cat) => (
                       <Link
                         key={cat}
-                        href={`/collections/${cat.toLowerCase()}`}
+                        href={`/products}`}
                         onClick={() => setMobileOpen(false)}
                       >
                         {cat}
