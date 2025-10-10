@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { signOutAction } from '@/app/lib/actions';
 import Link from 'next/link';
@@ -54,7 +54,12 @@ export default function HeaderClient({
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       {/* Announcement Bar */}
-      <div className="bg-black text-white text-xs py-2 px-4 flex justify-between items-center">
+      {/* Announcement Bar (smooth collapse) */}
+      <div
+        className={`bg-primary text-neutral-light text-xs px-4 flex justify-between items-center overflow-hidden transition-all duration-300 ease-out ${
+          scrolled ? 'max-h-0 opacity-0 -translate-y-2 py-0' : 'max-h-10 opacity-100 translate-y-0 py-2'
+        }`}
+      >
         <p className="absolute left-1/2 transform -translate-x-1/2 text-center hidden md:block">
           Free shipping when you spend over $50 · Save up to 50% off with code: ADORE
         </p>
@@ -68,7 +73,11 @@ export default function HeaderClient({
       {/* Main Nav */}
       <div
         className="bg-white shadow-lg border-b border-gray-200 transition-all duration-300 group"
-        style={{backgroundColor: '#ffffff', zIndex: 9999}}
+        style={{
+          backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.8)' : '#ffffff',
+          backdropFilter: scrolled ? 'saturate(180%) blur(8px)' : undefined,
+          zIndex: 9999,
+        }}
       >
         <div className="container relative mx-auto flex items-center justify-between h-20 px-6">
           {/* Left Nav (Desktop) */}
@@ -257,3 +266,4 @@ export default function HeaderClient({
     </header>
   );
 }
+

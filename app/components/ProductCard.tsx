@@ -22,62 +22,48 @@ interface ProductCardProps {
  * @param priority - Whether to load this image with priority (for LCP optimization)
  */
 export default function ProductCard({
-	product,
-	priority = false
+  product,
+  priority = false,
 }: {
-	product: ProductCardProps
-	priority?: boolean
+  product: ProductCardProps;
+  priority?: boolean;
 }) {
-	return (
-		<article className='product-card bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300'>
-			{/* Product Image */}
-			<div className='product-card__image-wrapper relative w-full h-64 bg-gray-100'>
-				<Image
-					src={product.image_url}
-					alt={product.name}
-					fill
-					sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 270px'
-					className='product-card__image object-cover'
-					priority={priority}
-				/>
-				{/* Stock Badge - only shows if stock is low */}
-				{/* Why < 5: Creates urgency for users to buy */}
-				{product.stock < 5 && (
-					<span className='product-card__badge absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded'>
-						Only {product.stock} left!
-					</span>
-				)}
-			</div>
+  return (
+    <article className="bg-white rounded-2xl overflow-hidden border border-black/5 shadow-[0_10px_25px_-10px_rgba(0,0,0,0.2)]">
+      {/* Image */}
+      <div className="relative w-full h-56 bg-neutral-light">
+        <Image
+          src={product.image_url}
+          alt={product.name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 314px"
+          className="object-cover"
+          priority={priority}
+        />
+      </div>
 
-			{/* Product Info */}
-			<div className='product-card__info p-4'>
-				{/* Category badge */}
-				<span className='product-card__category text-xs text-green-600 font-semibold uppercase tracking-wide'>
-					{product.category}
-				</span>
+      {/* Content */}
+      <div className="p-5">
+        <h3 className="text-base font-semibold text-neutral-dark mb-1">
+          {product.name}
+        </h3>
+        <p className="text-sm text-neutral-dark/70 mb-4">
+          Starting at ${parseFloat(product.price).toFixed(0)}
+        </p>
 
-				{/* Product name */}
-				<h3 className='product-card__name text-lg font-semibold text-gray-900 mt-2 mb-2'>
-					{product.name}
-				</h3>
+        <div className="flex items-center gap-3">
+          <button className="bg-accent text-neutral-light px-4 py-2 rounded-md shadow-sm hover:brightness-95">
+            Add to Cart
+          </button>
+          <Link
+            href={`/product/${product.product_id}`}
+            className="px-4 py-2 rounded-md border border-[var(--color-neutral-light)] bg-[var(--color-neutral-light)] text-[var(--color-neutral-dark)] hover:brightness-95 transition-all"
 
-				{/* Description */}
-				<p className='product-card__description text-sm text-gray-600 mb-4 line-clamp-2'>
-					{product.description}
-				</p>
-
-				{/* Price and CTA button */}
-				<div className='product-card__footer flex items-center justify-between'>
-					<span className='product-card__price text-2xl font-bold text-gray-900'>
-						${parseFloat(product.price).toFixed(2)}
-					</span>
-					<Link
-						href={`/product/${product.product_id}`}
-						className='product-card__link bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded transition-colors duration-200'>
-						View Details
-					</Link>
-				</div>
-			</div>
-		</article>
-	)
+          >
+            Details
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
 }
