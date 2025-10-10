@@ -6,9 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Link from "next/link";
 import {useEffect, useState} from "react";
-import StarRating from "./StarRating";
 import { UUID } from "crypto";
-import { get } from "http";
 
 type Product = {
   product_id: UUID;
@@ -49,7 +47,7 @@ const ProductCarousel = () => {
     speed: 500,
     autoplay: true,
     autoplaySpeed: 5000,
-    slidesToShow: 5,
+    slidesToShow: 4,
     slidesToScroll: 1,
     centerMode: false,
     initialSlide: 0,
@@ -62,13 +60,6 @@ const ProductCarousel = () => {
     responsive: [
       {
         breakpoint: 1280,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1279,
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
@@ -103,50 +94,39 @@ const ProductCarousel = () => {
   };
 
   return (
-    <Slider {...settings} className="mx-15 mb-15 group text-center">
+    <Slider {...settings} className="mb-15 group">
       {loading ? (
         <div>Loading...</div>
       ) : (
         products.map((product, i) => {
           return (
-            <Link
-              key={i}
-              className="px-1"
-              href={`/product/${product.product_id}`}
-              onClick={(e) => {
-                if (isDragging) e.preventDefault(); // prevent navigation if dragging
-              }}
-            >
-              <div className="bg-lightgray flex flex-col items-center justify-center overflow-hidden gap-4">
-                <div className="w-full h-full relative">
+            <div key={i} className="px-2">
+              <div className="bg-white rounded-2xl border border-black/5 shadow-[0_10px_25px_-10px_rgba(0,0,0,0.2)] overflow-hidden">
+                {/* Image */}
+                <Link
+                  href={`/product/${product.product_id}`}
+                  onClick={(e) => { if (isDragging) e.preventDefault(); }}
+                  className="block relative w-full h-[200px]"
+                >
                   <Image
                     src={`${product.image_url}`}
                     alt={product.name}
-                    width={314}
-                    height={314}
-                    className="w-full h-[314px] object-cover rounded-sm hover:opacity-0 transition-opacity duration-300"
+                    fill
+                    className="object-cover"
                   />
-                  <Image
-                    src={`${product.image_url}`}
-                    alt={product.name}
-                    width={314}
-                    height={314}
-                    className="w-full h-[314px] object-cover rounded-sm absolute top-0 left-0 opacity-0 hover:opacity-100 transition-opacity duration-300"
-                  />
+                </Link>
+
+                {/* Content */}
+                <div className="p-5">
+                  <h3 className="text-base font-semibold text-neutral-dark mb-1">{product.name}</h3>
+                  <p className="text-sm text-neutral-dark/70 mb-4">Starting at ${Math.round(product.price)}</p>
+                  <div className="flex items-center gap-3">
+                    <button className="bg-accent text-neutral-light px-4 py-2 rounded-md shadow-sm hover:brightness-95">Add to Cart</button>
+                    <Link href={`/product/${product.product_id}`} className="px-4 py-2 rounded-md border border-neutral-light/60 bg-neutral-light text-neutral-dark hover:bg-white transition-colors">Details</Link>
+                  </div>
                 </div>
-                <p className="text-center text-md">
-                  {product.name}
-                  <br />
-                  From ${product.price}
-                </p>
-                <StarRating
-                  productId={product.product_id}
-                />
-                <p className="text-center text-sm">
-                  Crafted by {product.seller_id.toString().slice(0, 8)}...
-                </p>
               </div>
-            </Link>
+            </div>
           );
         })
       )}
