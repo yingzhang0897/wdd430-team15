@@ -2,28 +2,35 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-import { sql } from "@vercel/postgres";
+import { sql } from "@vercel/postgres"; 
 import bcrypt from "bcrypt";
+
+const DEFAULT_ROLE = 'buyer'; 
 
 const handler = NextAuth({
     providers: [
         CredentialsProvider({
             name: "Credentials",
             credentials: {
-            email: { label: "Email", type: "text" },
-            password: { label: "Password", type: "password" },
+                email: { label: "Email", type: "text" },
+                password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-            if (!credentials?.email || !credentials?.password) return null;
+                if (!credentials?.email || !credentials?.password) return null;
 
-            const result = await sql`SELECT * FROM users WHERE email = ${credentials.email}`;
-            const user = result.rows[0];
+                const result = await sql`SELECT * FROM users WHERE email = ${credentials.email}`;
+                const user = result.rows[0];
 
-            if (!user) return null;
-            const isValid = await bcrypt.compare(credentials.password, user.password);
-            if (!isValid) return null;
+                if (!user) return null;
+                const isValid = await bcrypt.compare(credentials.password, user.password);
+                if (!isValid) return null;
 
-            return { id: user.id, email: user.email, role: user.role }; 
+                return { 
+                    id: user.id, 
+                    email: user.email, 
+                    name: user.name, 
+                    role: user.role 
+                }; 
             },
         }),
 
@@ -42,59 +49,67 @@ const handler = NextAuth({
         strategy: "jwt",
     },
     secret: process.env.AUTH_SECRET,
+
     callbacks: {
-        async signIn({user, account, profile}) {
+        
+        async signIn({ user, account, profile }) {
             if (account?.provider === 'google' || account?.provider === 'github') {
                 const userEmail = user.email || profile?.email;
+                if (!userEmail) return false; 
 
-                // check if user already exists
-                const existingUserResult = await sql`SELECT * FROM users WHERE email = ${userEmail}`;
-                if (existingUserResult.rows.length > 0) {
-                    return true;
-                } else {
-                    // insert new user with default 'buyer' role
-                    const name = user.name || profile?.name;
+                const existingUserResult = await sql`SELECT id FROM users WHERE email = ${userEmail}`;
+
+                if (existingUserResult.rows.length === 0) {
+                    const name = user.name || profile?.name || 'New User';
                     const email = userEmail;
-                    const role = 'buyer'; 
-      
-                    await sql`
-                        INSERT INTO users (name, email, role)
-                        VALUES (${name}, ${email}, ${role});
-                    `;
-                    return true;
+                    
+                    try {
+                        // Insert new use
+                        await sql`
+                            INSERT INTO users (name, email, role)
+                            VALUES (${name}, ${email}, ${DEFAULT_ROLE});
+                        `;
+                        console.log(`New user created for ${account.provider}: ${email}`);
+                    } catch (error) {
+                        console.error("Database error during OAuth sign-up:", error);
+                        return false; 
+                    }
                 }
             }
             return true;
         },
 
         async jwt({ token, user }) {
-            // if the user object is available or initial sign-in
-            if (user) { 
-                // Fetch user from the DB if object exist.
-                const result = await sql`SELECT user_id, role FROM users WHERE email = ${token.email}`;
-                const dbUser = result.rows[0];
-
-                if (dbUser) {
-                    // Mapping the user ID and role
-                    token.id = dbUser.user_id; 
-                    token.role = dbUser.role;
-                } else {
-                    // Fallback, if logics incorrect
-                    token.id = user.id;
+            if (user) {
+                if (user.role) {
                     token.role = user.role;
                 }
+                
+                // For OAuth: Need to fetch the role from the DB after sign-in/creation
+                else if (token.email) {
+                    const result = await sql`SELECT id, role FROM users WHERE email = ${token.email}`;
+                    const dbUser = result.rows[0];
+                    if (dbUser) {
+                        token.id = dbUser.id; 
+                        token.role = dbUser.role; // Fetch the role
+                    }
+                }
+                
             }
+            // return existing token on submit
             return token;
         },
+
+        
         async session({ session, token }) {
             if (token) {
-                //adding properties from the token to the session
-                session.user.id = token.id as string | number;
-                session.user.role = token.role as string;
+                session.user.id = token.id;
+                session.user.role = token.role; 
             }
             return session;
         },
     },
+
     pages: {
         signIn: "/login",
     },

@@ -13,8 +13,7 @@ export default function RegisterPage() {
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    role: 'CLIENT',
+    confirmPassword: ''
   });
 
   const [errors, setErrors] = useState<string[]>([]);
@@ -60,6 +59,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setErrors([]);
     setSuccess(null);
+    setIsLoading(true);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
@@ -90,7 +90,6 @@ export default function RegisterPage() {
         email: '',
         password: '',
         confirmPassword: '',
-        role: 'buyer',
       });
       setTouched({
         name: false,
@@ -105,9 +104,12 @@ export default function RegisterPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: formData.email, name: formData.name }),
     });
+    setIsLoading(false);
+
 
     router.push('/account/login'); 
-   
+    
+    
   };
 
   return (

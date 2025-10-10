@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
-  const [formData, setFormData] = useState({ email: '', password: '' , role: ''});
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,8 +38,7 @@ export default function LoginPage() {
       const res = await signIn('credentials', {
         redirect: false,
         email: formData.email,
-        password: formData.password,
-        role: formData.role,
+        password: formData.password
       });
 
       if (res?.ok) {
@@ -54,6 +53,34 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+
+
+  const handleGoogleSignIn = async () => {
+    const result = await signIn('google', { 
+      redirect: false,
+      callbackUrl: '/dashboard'
+    });
+
+    if (result?.ok && result.url) {
+      router.push(result.url); 
+    } else {
+      console.error(result?.error);
+    }
+  };
+
+  const handleGitHubSignIn = async () => {
+    const result = await signIn('github', { 
+      redirect: false,
+      callbackUrl: '/dashboard'
+    });
+
+    if (result?.ok && result.url) {
+      router.push(result.url); 
+    } else {
+      console.error(result?.error);
+    }
+  };
+
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-600 px-4 py-12">
@@ -103,11 +130,11 @@ export default function LoginPage() {
         </div>
 
         <div className='block'>
-          <button onClick={() => signIn("google")} className='text-gray-600 mr-10 cursor-pointer border-gray-300'>
+          <button onClick={(handleGoogleSignIn )} className='text-gray-600 mr-10 cursor-pointer border-gray-300'>
             Sign in with Google
           </button>
 
-          <button onClick={() => signIn("github")} className='text-gray-600 mr-10 cursor-pointer'>
+          <button onClick={(handleGitHubSignIn )} className='text-gray-600 mr-10 cursor-pointer'>
             Sign in with GitHub
           </button>
         </div> 

@@ -17,15 +17,14 @@ export async function POST(req: NextRequest) {
     if (existing.length > 0) {
       return NextResponse.json({ error: 'Email already registered' }, { status: 409 });
     }
-    const role = 'buyer';
     // Hash the password
     const passwordHash = await bcrypt.hash(password, 10);
    
     // Insert the new user
     const result = await sql`
-      INSERT INTO users (name, email, password, role)
-      VALUES (${name}, ${email}, ${passwordHash}, ${role})
-      RETURNING user_id, name, email, password, role;
+      INSERT INTO users (name, email, password)
+      VALUES (${name}, ${email}, ${passwordHash})
+      RETURNING id, name, email, password;
     `;
     console.log('Register req.body:', req.body);
 
