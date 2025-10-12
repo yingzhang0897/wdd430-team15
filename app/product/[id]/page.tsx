@@ -277,9 +277,12 @@ export default function ProductDetailPage() {
                   <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
                     {product.category}
                   </span>
-                  <span className="text-sm text-gray-500">
-                    by {product.seller_id}
-                  </span>
+                    <Link
+                      href={`/seller/${product.seller_id}`}
+                      className="text-sm text-blue-600 hover:underline"
+                      >
+                      see the seller
+                    </Link>
                 </div>
 
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
@@ -342,7 +345,12 @@ export default function ProductDetailPage() {
                   <div className="flex justify-between">
                     <dt className="text-gray-600">Artist:</dt>
                     <dd className="text-gray-900 font-medium">
-                      {product.seller_id}
+                      <Link
+                        href={`/seller/${product.seller_id}`}
+                        className="text-blue-600 hover:underline"
+                      >
+                        see the seller
+                      </Link>
                     </dd>
                   </div>
                   <div className="flex justify-between">
