@@ -1,13 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Playfair_Display, Roboto, Raleway, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const roboto = Roboto({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-heading",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const raleway = Raleway({
+  variable: "--font-accent",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -28,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${roboto.variable} ${playfair.variable} ${raleway.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
         {children}
