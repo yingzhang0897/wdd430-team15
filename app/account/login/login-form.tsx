@@ -21,10 +21,10 @@ export default function LoginForm() {
   );
  
   return (
-    <form action={formAction} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`mb-3 text-2xl`}>
-          Please log in to continue.
+    <form action={formAction} className="space-y-3 flex-1 rounded-lg px-6 pb-4 pt-4 border border-gray-200 shadow-lg bg-gray-50">
+      <div className="flex-1 rounded-lg px-6 pb-1">
+        <h1 className={`text-3xl md:text-4xl font-extrabold tracking-tight text-center text-gray-900 mb-6 leading-tight antialiased`}>
+          Please Login
         </h1>
         <div className="w-full">
           <div>
@@ -36,7 +36,7 @@ export default function LoginForm() {
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="text-gray-900 peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="email"
                 type="email"
                 name="email"
@@ -55,7 +55,7 @@ export default function LoginForm() {
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="text-gray-900 peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="password"
                 type="password"
                 name="password"
@@ -68,11 +68,11 @@ export default function LoginForm() {
           </div>
         </div>
         <input type="hidden" name="redirectTo" value={callbackUrl} />
-        <Button className="mt-4 w-full" aria-disabled={isPending}>
-          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        <Button className="flex items-center justify-between h-12 px-4 bg-accent text-white rounded w-full mt-5 transition" aria-disabled={isPending}>
+          Log in <ArrowRightIcon className="h-5 w-5 text-gray-50" />
         </Button>
         <div
-          className="flex h-8 items-end space-x-1"
+          className="flex h-3 items-end space-x-1 mt-5"
           aria-live="polite"
           aria-atomic="true"
         >
