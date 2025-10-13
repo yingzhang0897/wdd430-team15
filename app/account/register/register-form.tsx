@@ -13,9 +13,9 @@ export default function RegisterForm() {
   });
 
   return (
-    <div className="bg-gray-300 rounded-xl flex items-start justify-center pt-5 px-2 pb-4">
+    <div className="rounded-xl flex items-start justify-center pt-5 px-2 pb-4">
       <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-5">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6 underline">
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-3 underline">
           Create Your Account
         </h1>
 
@@ -32,7 +32,7 @@ export default function RegisterForm() {
           </div>
         )}
 
-        <form action={formAction} className="space-y-4">
+        <form action={formAction} className="space-y-3 flex-1 rounded-lg px-6 pb-4 pt-4 border border-gray-200 shadow-lg bg-gray-50">
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -40,8 +40,8 @@ export default function RegisterForm() {
             </label>
             <input
               name="name"
-              className="w-full border rounded-md px-3 py-2"
-              placeholder="John Doe"
+              className="w-full border rounded-md px-3 py-2 text-gray-900"
+              placeholder="Team-15 Project"
               required
             />
             {state.errors?.name && (
@@ -59,7 +59,7 @@ export default function RegisterForm() {
             <input
               type="email"
               name="email"
-              className="w-full border rounded-md px-3 py-2"
+              className="w-full border rounded-md px-3 py-2 text-gray-900"
               placeholder="you@example.com"
               required
             />
@@ -78,7 +78,7 @@ export default function RegisterForm() {
             <input
               type="password"
               name="password"
-              className="w-full border rounded-md px-3 py-2"
+              className="w-full border rounded-md px-3 py-2 text-gray-900"
               placeholder="••••••••"
               required
             />
