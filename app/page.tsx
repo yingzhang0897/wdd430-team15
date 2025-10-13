@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative w-full h-[100vh] md:h-[100vh] overflow-hidden bottom-0">
+      <section className="relative w-full h-[100vh] md:h-[100vh] overflow-hidden bottom-0 pt-28 md:pt-0">
         {/* Background video */}
         <video
           className="absolute inset-0 w-full h-full object-cover opacity-95"
@@ -32,7 +32,7 @@ export default function Home() {
         {/* CTAs */}
         <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 h-full flex items-end pb-10 md:pb-16">
           <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-6xl font-bold leading-tight text-primary">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight text-primary">
               Handcrafted with Heart.
               <br />
               Designed for You.
@@ -63,9 +63,15 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <div className="mb-6 flex items-baseline justify-between">
             <h2 className="text-3xl md:text-4xl font-bold text-primary">Crafted Just for You</h2>
-            <Link href="/products" className="bg-accent text-neutral-light px-4 py-2 rounded-md shadow-sm hover:brightness-95">View all</Link>
+            <Link href="/products" className="hidden md:inline-flex bg-accent text-neutral-light px-4 py-2 rounded-md shadow-sm hover:brightness-95">View all</Link>
           </div>
           <ProductCarousel />
+         
+          <div className="mt-6 md:hidden">
+            <Link href="/products" className="block w-full">
+              <Button className="w-full px-4 py-2">View all</Button>
+            </Link>
+          </div>
         </div>
       </section>
     </main>

@@ -140,8 +140,19 @@ export default function HeaderClient({
             </Link>
           </nav>
 
-          {/* Logo */}
-          <div className="absolute left-1/2 transform -translate-x-1/2">
+          {/* Mobile Logo (left-aligned) */}
+          <div className="md:hidden">
+            <Link href="/">
+              <img
+                src="/images/logo.png"
+                alt="Logo"
+                className="h-12 w-auto"
+              />
+            </Link>
+          </div>
+
+          {/* Desktop/Tablet Centered Logo */}
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2">
             <Link href="/">
               <img
                 src="/images/logo.png"
@@ -163,19 +174,20 @@ export default function HeaderClient({
                   style={{color: '#000000', fontWeight: 'bold'}}
                 >
                   <Power className="h-5 w-5" />
-                  <span>Logout</span>
+                  <span className="hidden sm:inline">Logout</span>
                 </button>
               </form>
             ) : (
               <Link href="/account/login" className={`${linkBase} ${linkHover} flex items-center gap-1`} style={{color: '#000000', fontWeight: 'bold'}}>
                 <User className="h-5 w-5" />
-                <span>Login</span>
+                <span className="hidden sm:inline">Login</span>
               </Link>
             )}
 
             {/* Cart */}
             <Link href="/cart" className={`${linkBase} ${linkHover} flex items-center`} style={{color: '#000000', fontWeight: 'bold'}}>
-              <ShoppingBag className="h-5 w-5 mr-1" /> Cart (0)
+              <ShoppingBag className="h-5 w-5 mr-1" />
+              <span className="hidden sm:inline">Cart (0)</span>
             </Link>
             
 
@@ -214,7 +226,7 @@ export default function HeaderClient({
                     categories.map((cat) => (
                       <Link
                         key={cat}
-                        href={`/products}`}
+                        href={`/products`}
                         onClick={() => setMobileOpen(false)}
                       >
                         {cat}

@@ -66,5 +66,7 @@ h3 {
 
 .slick-slide {
   display: block !important;       /* ensures no inline-block quirks */
+  flex: 0 0 auto;                 
+  height: auto;                    
 }
 

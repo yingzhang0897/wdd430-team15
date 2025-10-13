@@ -54,9 +54,9 @@ export default function ShopPage() {
     // Show loading state
     if (loading) {
         return (
-            <main className="pt-32 min-h-screen bg-gray-50">
+            <main className="pt-24 md:pt-32 min-h-screen bg-gray-50">
                 <div className="container mx-auto max-w-7xl px-6 py-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-8">Shop Products</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Shop Products</h1>
                     <div className="flex items-center justify-center min-h-[400px]">
                         <div className="text-center">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -71,9 +71,9 @@ export default function ShopPage() {
     // Show error state
     if (error) {
         return (
-            <main className="pt-32 min-h-screen bg-gray-50">
+            <main className="pt-24 md:pt-32 min-h-screen bg-gray-50">
                 <div className="container mx-auto max-w-7xl px-6 py-8">
-                    <h1 className="text-4xl font-bold text-gray-900 mb-8">Shop Products</h1>
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Shop Products</h1>
                     <div className="text-center py-12">
                         <p className="text-red-600 text-lg mb-4">Error loading products: {error}</p>
                         <button 
@@ -89,14 +89,16 @@ export default function ShopPage() {
     }
 
     return (
-        <main className="pt-32 min-h-screen bg-gray-50">
+        <main className="pt-24 md:pt-32 min-h-screen bg-gray-50">
             <div className="container mx-auto max-w-7xl px-6 py-8">
-                <h1 className="text-4xl font-bold text-gray-900 mb-8">Shop Products</h1>
-                <div className="flex gap-4 mb-8">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Shop Products</h1>
+                
+                <div className="mb-8 rounded-lg border border-neutral-200 bg-white/90 backdrop-blur px-4 py-3 shadow-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <select
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
-                        className="border px-3 py-2 rounded"
+                        className="w-full border border-neutral-300 bg-white text-neutral-dark px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
                     >
                         <option value="">All Categories</option>
                         {categories.map((cat) => (
@@ -108,15 +110,16 @@ export default function ShopPage() {
                         placeholder="Min Price"
                         value={minPrice}
                         onChange={(e) => setMinPrice(e.target.value)}
-                        className="border px-3 py-2 rounded w-32"
+                        className="border border-neutral-300 bg-white text-neutral-dark px-3 py-2 rounded-md w-full placeholder:text-neutral-dark/60 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
                     />
                     <input
                         type="number"
                         placeholder="Max Price"
                         value={maxPrice}
                         onChange={(e) => setMaxPrice(e.target.value)}
-                        className="border px-3 py-2 rounded w-32"
+                        className="border border-neutral-300 bg-white text-neutral-dark px-3 py-2 rounded-md w-full placeholder:text-neutral-dark/60 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
                     />
+                  </div>
                 </div>
                 <ProductGrid products={filteredProducts} />
             </div>
