@@ -12,9 +12,13 @@ import { useActionState } from 'react';
 import { authenticate }  from '@/app/lib/actions';
 import { useSearchParams } from 'next/navigation';
  
-export default function LoginForm() {
+export default function LoginForm({ userType = 'user' }: { userType?: 'user' | 'seller' }) {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard/seller';
+  
+  // Set default redirect based on user type
+  const defaultRedirect = userType === 'seller' ? '/dashboard/seller' : '/dashboard/user';
+  const callbackUrl = searchParams.get('callbackUrl') || defaultRedirect;
+  
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined,
@@ -24,7 +28,7 @@ export default function LoginForm() {
     <form action={formAction} className="space-y-3 flex-1 rounded-lg px-6 pb-4 pt-4 border border-gray-200 shadow-lg bg-gray-50">
       <div className="flex-1 rounded-lg px-6 pb-1">
         <h1 className={`text-3xl md:text-4xl font-extrabold tracking-tight text-center text-gray-900 mb-6 leading-tight antialiased`}>
-          Please Login
+          {userType === 'seller' ? 'Seller Login' : 'Customer Login'}
         </h1>
         <div className="w-full">
           <div>
@@ -68,6 +72,7 @@ export default function LoginForm() {
           </div>
         </div>
         <input type="hidden" name="redirectTo" value={callbackUrl} />
+        <input type="hidden" name="userType" value={userType} />
         <Button className="flex items-center justify-between h-12 px-4 bg-accent text-white rounded w-full mt-5 transition" aria-disabled={isPending}>
           Log in <ArrowRightIcon className="h-5 w-5 text-gray-50" />
         </Button>
@@ -86,12 +91,12 @@ export default function LoginForm() {
 
         {/*Register Option */}
         <div className="mt-6 text-center text-sm text-gray-600">
-          Don’t have an account?{' '}
+          Don't have an account?{' '}
           <Link
-            href="/account/register"
+            href={userType === 'seller' ? '/account/register/seller' : '/account/register'}
             className="font-medium text-blue-600 hover:underline"
           >
-            Register here
+            Register as {userType}
           </Link>
         </div>
       </div>

@@ -1,38 +1,18 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
-
-const secret = process.env.NEXTAUTH_SECRET;
-
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-
-  const publicPaths = ["/login", "/api/auth", "/favicon.ico"];
-
-  if (publicPaths.some((path) => pathname.startsWith(path))) {
-    return NextResponse.next();
-  }
-
-  const token = await getToken({ req, secret });
-
-  if (!token) {
-    const loginUrl = new URL("/login", req.url);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  if (token.role === "buyer" && pathname.startsWith("/seller")) {
-    const dashboardUrl = new URL("/dashboard", req.url);
-    return NextResponse.redirect(dashboardUrl);
-  }
-
-  if (token.role === "seller" && pathname.startsWith("/buyer")) {
-    const dashboardUrl = new URL("/dashboard", req.url);
-    return NextResponse.redirect(dashboardUrl);
-  }
-
-  return NextResponse.next();
-}
+import NextAuth from 'next-auth';
+import { authConfig } from './auth.config';
+ 
+export default NextAuth(authConfig).auth;
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/seller/:path*", "/buyer/:path*"],
+  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 };

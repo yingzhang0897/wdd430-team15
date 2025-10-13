@@ -165,18 +165,26 @@ export default function HeaderClient({
 
           {/* Right Nav */}
           <div className="flex items-center space-x-6">
-            {/* Account - Show Login/Logout based on session */}
+            {/* Account - Show Dashboard/Login based on session */}
             {session?.user ? (
-              <form action={signOutAction}>
-                <button
-                  type="submit"
-                  className={`${linkBase} ${linkHover} flex items-center gap-1`}
-                  style={{color: '#000000', fontWeight: 'bold'}}
-                >
-                  <Power className="h-5 w-5" />
-                  <span className="hidden sm:inline">Logout</span>
-                </button>
-              </form>
+              <div className="flex items-center space-x-4">
+                {/* User Dashboard Link */}
+                <Link href="/dashboard/user" className={`${linkBase} ${linkHover} flex items-center gap-1`} style={{color: '#000000', fontWeight: 'bold'}}>
+                  <User className="h-5 w-5" />
+                  <span className="hidden sm:inline">Dashboard</span>
+                </Link>
+                {/* Logout Button */}
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className={`${linkBase} ${linkHover} flex items-center gap-1`}
+                    style={{color: '#000000', fontWeight: 'bold'}}
+                  >
+                    <Power className="h-5 w-5" />
+                    <span className="hidden sm:inline">Logout</span>
+                  </button>
+                </form>
+              </div>
             ) : (
               <Link href="/account/login" className={`${linkBase} ${linkHover} flex items-center gap-1`} style={{color: '#000000', fontWeight: 'bold'}}>
                 <User className="h-5 w-5" />
@@ -255,17 +263,20 @@ export default function HeaderClient({
 
               <Link href="/faq" onClick={() => setMobileOpen(false)}>FAQs</Link>
               
-              {/* Account - Login/Logout for mobile */}
+              {/* Account - Dashboard/Login for mobile */}
               {session?.user ? (
-                <form action={signOutAction}>
-                  <button
-                    type="submit"
-                    className="text-left text-gray-800 text-lg"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Logout
-                  </button>
-                </form>
+                <>
+                  <Link href="/dashboard/user" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+                  <form action={signOutAction}>
+                    <button
+                      type="submit"
+                      className="text-left text-gray-800 text-lg"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Logout
+                    </button>
+                  </form>
+                </>
               ) : (
                 <Link href="/account/login" onClick={() => setMobileOpen(false)}>Login</Link>
               )}
