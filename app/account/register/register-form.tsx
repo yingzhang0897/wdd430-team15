@@ -32,7 +32,7 @@ export default function RegisterForm() {
           </div>
         )}
 
-        <form action={formAction} className="space-y-3 flex-1 rounded-lg px-6 pb-4 pt-4 border border-gray-200 shadow-lg bg-gray-50">
+        <form action={formAction} className="space-y-3 flex-1 rounded-lg px-6 pb-4 pt-4  shadow-lg bg-gray-50">
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
