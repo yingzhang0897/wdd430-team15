@@ -1,18 +1,18 @@
-// app/product/[id]/review/page.tsx
-import { auth } from "@/auth";
 import ReviewClientPage from "./ReviewClientPage";
 
-export default async function ReviewPage({params}: {params: {id: string}}) {
-  const productId = params.id;
-  const session = await auth(); // Ensure user is authenticated
-  console.log("Session:", session);
+interface Props {
+  params: Promise<{ id: string }>;
+}
 
-  const product = await fetch(
-    `http://localhost:3000/api/products/${productId}`
-  ).then((response) => {
-    if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
-    return response.json();
-  });
+async function getProduct(id: string) {
+  const res = await fetch(`${process.env.API_URL}/api/products/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch product");
+  return res.json();
+}
+
+export default async function Page({ params }: Props) {
+  const { id } = await params;  // <-- await here
+  const product = await getProduct(id);
 
   return <ReviewClientPage product={product} />;
 }
