@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
 import AlertModal from "./AlertModal";
-import ReviewModal from "./ReviewModal";
 import {UUID} from "crypto";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 interface StarRatingProps {
   horizontal?: boolean;
@@ -15,12 +15,12 @@ const StarRating = ({
   initialRating = 0,
   productId,
 }: StarRatingProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [rating, setRating] = useState(initialRating);
   const [reviews, setReviews] = useState([]);
   const [hoverRating, setHoverRating] = useState(initialRating);
-  const userLoggedIn = true; // Replace with actual authentication logic
   const [showAlert, setShowAlert] = useState(false);
-  const [showReviewModal, setShowReviewModal] = useState(false);
 
   useEffect(() => {
     if (!productId) return;
@@ -51,34 +51,23 @@ const StarRating = ({
       .then((data) => setReviews(data || []))
       .catch((err) => console.error("Failed to refresh reviews:", err));
   };
-
-  const onRate = (value: number) => {
-    setRating(value);
-    setShowReviewModal(true); // Open review modal after rating
-  };
-
+  
   // Handle mouse hover with proper MouseEvent typing
   const handleMouseOver = (event: React.MouseEvent<HTMLButtonElement>) => {
     const value = Number(event.currentTarget.dataset.value);
     setHoverRating(value);
   };
-
+  
   // Handle mouse out event
   const handleMouseOut = () => {
     setHoverRating(initialRating);
   };
-
+  
   const handleClick = (
     e: React.MouseEvent<HTMLButtonElement>,
     value: number
   ) => {
-    e.preventDefault();
-    if (!userLoggedIn) {
-      // Show modal or alert
-      setShowAlert(true);
-      return;
-    }
-    onRate(value); // Callback to parent component or API
+    router.push(`${pathname}/review?rating=${value}`);
   };
 
   const stars = [1, 2, 3, 4, 5];
@@ -94,29 +83,12 @@ const StarRating = ({
         onClose={() => setShowAlert(false)}
         message="Please log in to rate products."
       />
-      <ReviewModal
-        isOpen={showReviewModal}
-        prevRating={rating}
-        productId={productId}
-        onClose={() => setShowReviewModal(false)}
-        onSubmitted={() => {
-          // refresh review list and rating after successful submission
-          refreshReviews();
-          fetch(`/api/products/${productId}/rating`)
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.averageRating !== undefined)
-                setRating(data.averageRating);
-            })
-            .catch((err) => console.error("Failed to refresh rating:", err));
-        }}
-      />
       <div>
         {stars.map((star) => (
           <button
             key={star}
             data-value={star}
-            className={`text-2xl transition-all duration-200 ${
+            className={`text-2xl transition-all duration-200 cursor-pointer ${
               hoverRating > 0
                 ? hoverRating >= star
                   ? "text-yellow-500"

@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {randomUUID} from "crypto";
 import postgres from "postgres";
+import { auth } from "@/auth";
 
 if (!process.env.POSTGRES_URL) {
   console.warn(
@@ -17,6 +18,7 @@ const sql = process.env.POSTGRES_URL
 
 // Create a new review (in-memory for now using placeholder-data)
 const createReview = async (request: Request) => {
+  const session = await auth();
   const data = await request.json();
   console.log("Received review data:", data);
 
@@ -32,7 +34,7 @@ const createReview = async (request: Request) => {
   const newReview = {
     review_id,
     product_id: data.productId ?? data.product_id,
-    user_id: data.userId ?? data.user_id ?? null,
+    user_id: session?.user.id ?? null,
     rating: Number(data.rating),
     comment: data.review ?? data.comment ?? "",
   };
@@ -73,6 +75,23 @@ const createReview = async (request: Request) => {
     console.error("POSTGRES_URL not configured — cannot insert into DB");
     return NextResponse.json(
       {message: "POSTGRES_URL not configured"},
+      {status: 500}
+    );
+  }
+
+  try {
+    const duplicate = await sql`SELECT * FROM reviews WHERE product_id = ${newReview.product_id} AND user_id = ${newReview.user_id}`;
+    if (duplicate && duplicate.length > 0) {
+      return NextResponse.json(
+        {message: "You have already submitted a review for this product."},
+        {status: 409}
+      );
+    }
+  }
+  catch (err) {
+    console.error("Error checking for duplicate review:", err);
+    return NextResponse.json(
+      {message: "Error checking for duplicate review", error: String(err)},
       {status: 500}
     );
   }
