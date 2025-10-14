@@ -4,15 +4,27 @@ function getRandomId() {
   return uuidv4();
 }
 
-// Demo user
+// Demo users - each with different data
 const users = [
   {
-    user_id: getRandomId(),
-    name: 'User',
+    user_id: 'b7f3d4e5-6789-4012-b345-6789abcdef01',
+    name: 'John Smith',
     email: 'user@nextmail.com',
     password: '123456', // will be hashed in seeding
+  },
+  // Add more users for testing different accounts
+  {
+    user_id: 'a1b2c3d4-5678-9012-3456-789abcdef123',
+    name: 'Maria Garcia',
+    email: 'maria@example.com',
+    password: '123456',
+  },
+  {
+    user_id: 'c4d5e6f7-8901-2345-6789-abcdef123456',
+    name: 'David Johnson',
+    email: 'david@example.com', 
+    password: '123456',
   }
-  
 ];
 
 const sellers = [
@@ -178,4 +190,83 @@ const reviews = [
   }
 ];
 
-export { users, sellers, products, reviews };
+// Sample orders data
+const orders = [
+  {
+    order_id: getRandomId(),
+    user_id: users[0].user_id,
+    status: 'delivered',
+    total_amount: 45.0,
+    created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // 2 days ago
+  },
+  {
+    order_id: getRandomId(),
+    user_id: users[0].user_id,
+    status: 'shipped', 
+    total_amount: 30.0,
+    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // 1 week ago
+  },
+  {
+    order_id: getRandomId(),
+    user_id: users[0].user_id,
+    status: 'processing',
+    total_amount: 95.0,
+    created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000) // 2 weeks ago
+  }
+];
+
+// Sample order items
+const orderItems = [
+  {
+    order_item_id: getRandomId(),
+    order_id: orders[0].order_id,
+    product_id: products[0].product_id, // Elegant Athena Ring
+    quantity: 1,
+    price: 45.0
+  },
+  {
+    order_item_id: getRandomId(),
+    order_id: orders[1].order_id,
+    product_id: products[2].product_id, // TimberCopter
+    quantity: 1,
+    price: 30.0
+  },
+  {
+    order_item_id: getRandomId(),
+    order_id: orders[2].order_id,
+    product_id: products[1].product_id, // Heart Bezel Necklace
+    quantity: 1,
+    price: 25.0
+  },
+  {
+    order_item_id: getRandomId(),
+    order_id: orders[2].order_id,
+    product_id: products[6].product_id, // Luxury Leather Handbag
+    quantity: 1,
+    price: 80.0
+  }
+];
+
+// Sample favorites
+const favorites = [
+  {
+    favorite_id: getRandomId(),
+    user_id: users[0].user_id,
+    product_id: products[1].product_id, // Heart Bezel Necklace
+    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // 1 week ago
+  },
+  {
+    favorite_id: getRandomId(),
+    user_id: users[0].user_id,
+    product_id: products[4].product_id, // Willowtime Tea Party
+    created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
+  },
+  {
+    favorite_id: getRandomId(),
+    user_id: users[0].user_id,
+    product_id: products[8].product_id, // Ancient Liquor Container
+    created_at: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000) // 3 weeks ago
+  }
+];
+
+export { users, sellers, products, reviews, orders, orderItems, favorites };

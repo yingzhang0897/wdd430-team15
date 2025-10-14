@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import postgres from "postgres";
 import bcrypt from 'bcryptjs';
-import { users, sellers, products, reviews } from "../lib/placeholder-data";
+import { users, sellers, products, reviews, orders, orderItems, favorites } from "../lib/placeholder-data";
 
 const sql = postgres(process.env.POSTGRES_URL!, {
   ssl: "require",
@@ -10,7 +10,10 @@ const sql = postgres(process.env.POSTGRES_URL!, {
 
 export async function GET() {
   try {
-    // Drop existing tables (reviews first since it depends on products/users)
+    // Drop existing tables (in correct order due to foreign key dependencies)
+    await sql`DROP TABLE IF EXISTS order_items CASCADE;`;
+    await sql`DROP TABLE IF EXISTS orders CASCADE;`;
+    await sql`DROP TABLE IF EXISTS favorites CASCADE;`;
     await sql`DROP TABLE IF EXISTS reviews CASCADE;`;
     await sql`DROP TABLE IF EXISTS products CASCADE;`;
     await sql`DROP TABLE IF EXISTS sellers CASCADE;`;
@@ -25,7 +28,9 @@ export async function GET() {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       );
     `;
 
@@ -50,7 +55,43 @@ export async function GET() {
         price NUMERIC(10,2) NOT NULL,
         stock INT NOT NULL,
         category VARCHAR(255) NOT NULL,
-        image_url VARCHAR(255) NOT NULL
+        image_url VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `;
+
+    // Orders table
+    await sql`
+      CREATE TABLE IF NOT EXISTS orders (
+        order_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        status VARCHAR(50) DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'shipped', 'delivered', 'cancelled')),
+        total_amount NUMERIC(10,2) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      );
+    `;
+
+    // Order Items table
+    await sql`
+      CREATE TABLE IF NOT EXISTS order_items (
+        order_item_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        order_id UUID NOT NULL REFERENCES orders(order_id) ON DELETE CASCADE,
+        product_id UUID NOT NULL REFERENCES products(product_id) ON DELETE CASCADE,
+        quantity INT NOT NULL CHECK (quantity > 0),
+        price NUMERIC(10,2) NOT NULL
+      );
+    `;
+
+    // Favorites table
+    await sql`
+      CREATE TABLE IF NOT EXISTS favorites (
+        favorite_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        product_id UUID NOT NULL REFERENCES products(product_id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT NOW(),
+        UNIQUE(user_id, product_id)
       );
     `;
 
@@ -101,6 +142,47 @@ export async function GET() {
       `;
     }
 
+    // Insert orders
+    for (const order of orders) {
+      await sql`
+        INSERT INTO orders (order_id, user_id, status, total_amount, created_at)
+        VALUES (
+          ${order.order_id},
+          ${order.user_id},
+          ${order.status},
+          ${order.total_amount},
+          ${order.created_at.toISOString()}
+        );
+      `;
+    }
+
+    // Insert order items
+    for (const orderItem of orderItems) {
+      await sql`
+        INSERT INTO order_items (order_item_id, order_id, product_id, quantity, price)
+        VALUES (
+          ${orderItem.order_item_id},
+          ${orderItem.order_id},
+          ${orderItem.product_id},
+          ${orderItem.quantity},
+          ${orderItem.price}
+        );
+      `;
+    }
+
+    // Insert favorites
+    for (const favorite of favorites) {
+      await sql`
+        INSERT INTO favorites (favorite_id, user_id, product_id, created_at)
+        VALUES (
+          ${favorite.favorite_id},
+          ${favorite.user_id},
+          ${favorite.product_id},
+          ${favorite.created_at.toISOString()}
+        );
+      `;
+    }
+
     // Insert reviews
     for (const review of reviews) {
       await sql`
@@ -115,7 +197,7 @@ export async function GET() {
       `;
     }
 
-    return NextResponse.json({ message: "Database dropped, recreated, and reseeded successfully with users, sellers, products, and reviews!" });
+    return NextResponse.json({ message: "Database dropped, recreated, and reseeded successfully with users, sellers, products, orders, favorites, and reviews!" });
   } catch (error) {
     console.error("Error during seeding:", error);
     return NextResponse.json({ error }, { status: 500 });
