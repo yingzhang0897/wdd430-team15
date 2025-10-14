@@ -40,7 +40,7 @@ const AlertModal = ({
         className="bg-white text-black rounded-lg overflow-hidden shadow-lg max-w-sm w-full opacity-100 transition-all duration-300 transform relative"
         onClick={(e) => e.stopPropagation()} // Prevent modal from closing when clicking inside
       >
-        <div className="flex justify-center w-full bg-red-800">
+        <div className="flex justify-center w-full bg-blue-800">
           <h2 className="text-2xl font-bold text-center my-3 text-white">
             Alert
           </h2>
@@ -68,7 +68,7 @@ const AlertModal = ({
           <p className="text-lg my-5 text-center">{message}</p>
           <div className="flex justify-center">
             <button
-              className="px-4 py-1 bg-red-800 text-white rounded-md hover:bg-red-900"
+              className="px-4 py-1 bg-blue-800 text-white rounded-md hover:bg-blue-900"
               onClick={onClose}
             >
               Ok
