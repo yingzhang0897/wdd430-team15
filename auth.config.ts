@@ -8,18 +8,15 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      const isOnSellerDashboard = nextUrl.pathname.startsWith('/dashboard/seller');
-      const isOnUserDashboard = nextUrl.pathname.startsWith('/dashboard/user');
-      const isOnSellerProfile = nextUrl.pathname.startsWith('/seller/');
       const isOnReviewPage = nextUrl.pathname.endsWith('/review');
 
-      // Protect all dashboard routes
-      if (isOnDashboard || isOnSellerProfile || isOnReviewPage) {
-        if (!isLoggedIn) {
-          return false; // Redirect to sign in
-        }
-        return true;
-      }
+			// Protect dashboard and review routes only (seller profiles are public)
+			if (isOnDashboard || isOnReviewPage) {
+				if (!isLoggedIn) {
+					return false // Redirect to sign in
+				}
+				return true
+			}
 
 			return true
 		}
