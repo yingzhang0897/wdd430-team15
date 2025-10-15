@@ -11,7 +11,7 @@ export const authConfig = {
       const isOnSellerDashboard = nextUrl.pathname.startsWith('/dashboard/seller');
       const isOnUserDashboard = nextUrl.pathname.startsWith('/dashboard/user');
       const isOnSellerProfile = nextUrl.pathname.startsWith('/seller/');
-      const isOnReviewPage = nextUrl.pathname.includes('/review');
+      const isOnReviewPage = nextUrl.pathname.endsWith('/review');
 
       // Protect all dashboard routes
       if (isOnDashboard || isOnSellerProfile || isOnReviewPage) {

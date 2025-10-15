@@ -43,14 +43,6 @@ const StarRating = ({
       })
       .catch((err) => console.error("Failed to load reviews:", err));
   }, [productId]);
-
-  const refreshReviews = () => {
-    if (!productId) return;
-    fetch(`/api/reviews/${productId}`)
-      .then((response) => response.json())
-      .then((data) => setReviews(data || []))
-      .catch((err) => console.error("Failed to refresh reviews:", err));
-  };
   
   // Handle mouse hover with proper MouseEvent typing
   const handleMouseOver = (event: React.MouseEvent<HTMLButtonElement>) => {
