@@ -1,14 +1,14 @@
 import type { NextAuthConfig } from 'next-auth'
 
 export const authConfig = {
-	pages: {
-		signIn: '/account/login'
-	},
-	callbacks: {
-		authorized({ auth, request: { nextUrl } }) {
-			const isLoggedIn = !!auth?.user
-			const isOnDashboard = nextUrl.pathname.startsWith('/dashboard')
-			const isOnReviewPage = nextUrl.pathname.includes('/review')
+  pages: {
+    signIn: '/account/login',
+  },
+  callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
+      const isOnReviewPage = nextUrl.pathname.endsWith('/review');
 
 			// Protect dashboard and review routes only (seller profiles are public)
 			if (isOnDashboard || isOnReviewPage) {

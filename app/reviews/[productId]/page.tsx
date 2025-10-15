@@ -1,24 +1,30 @@
 "use client";
 
-import React, {use, useEffect} from "react";
+import React, { use, useEffect } from "react";
 
 interface Review {
   id: string;
-  author: string;
+  authorId: string;
+  authorName: string | null; // null means loading
   rating: number;
   comment: string;
 }
 
-export default function ReviewsPage({ params }: { params: Promise<{ productId: string }> }) {
-    const { productId } = use(params);
+export default function ReviewsPage({
+  params,
+}: {
+  params: Promise<{ productId: string }>;
+}) {
+  const { productId } = use(params);
 
   const [product, setProduct] = React.useState<any>(null);
-  const [reviews, setReviews] = React.useState<Review[]>([]);   
+  const [reviews, setReviews] = React.useState<Review[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
   useEffect(() => {
     if (!productId) return;
+
     setLoading(true);
     setError(null);
 
@@ -27,35 +33,65 @@ export default function ReviewsPage({ params }: { params: Promise<{ productId: s
       fetch(`/api/reviews/${encodeURIComponent(productId)}`)
         .then((response) => {
           if (!response.ok)
-            throw new Error(`Failed to fetch: ${response.status}`);
+            throw new Error(`Failed to fetch reviews: ${response.status}`);
           return response.json();
         })
         .then((data) => {
-          // Map DB response shape to our Review interface
           if (!Array.isArray(data)) return [];
+
+          // Map to Review interface with separate authorId and authorName (null initially)
           return data.map((r: any) => ({
             id: r.review_id ?? r.id ?? String(Math.random()),
-            author: r.user_id ?? r.author ?? "User",
+            authorId: r.user_id ?? r.author ?? "unknown",
+            authorName: null,
             rating: Number(r.rating ?? 0),
             comment: r.comment ?? r.comment_text ?? "",
           }));
         }),
+
       fetch(`/api/products/${encodeURIComponent(productId)}`).then(
         (response) => {
           if (!response.ok)
-            throw new Error(`Failed to fetch: ${response.status}`);
+            throw new Error(`Failed to fetch product: ${response.status}`);
           return response.json();
         }
       ),
-    ]).then(([reviewsData, productData]) => {
-      setReviews(reviewsData);
-      setProduct(productData);
-      setLoading(false);
-    }).catch((err) => {
-      console.error("Error loading reviews or product:", err);
-      setError("Failed to load reviews or product data.");
-      setLoading(false);
-    });
+    ])
+      .then(async ([reviewsData, productData]) => {
+        setProduct(productData);
+        setReviews(reviewsData);
+
+        // Fetch all user names in parallel and update reviews when done
+        const reviewsWithNames = await Promise.all(
+          reviewsData.map(async (review) => {
+            try {
+              const res = await fetch(
+                `/api/users/${encodeURIComponent(review.authorId)}`
+              );
+              if (!res.ok) throw new Error("Failed to fetch user");
+              const userData = await res.json();
+
+              return {
+                ...review,
+                authorName: userData.name || review.authorId,
+              };
+            } catch {
+              return {
+                ...review,
+                authorName: review.authorId, // fallback if fetch fails
+              };
+            }
+          })
+        );
+
+        setReviews(reviewsWithNames);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error loading reviews or product:", err);
+        setError("Failed to load reviews or product data.");
+        setLoading(false);
+      });
   }, [productId]);
 
   return (
@@ -92,7 +128,7 @@ export default function ReviewsPage({ params }: { params: Promise<{ productId: s
         <ul className="space-y-8">
           {loading ? (
             // show skeletons
-            Array.from({length: 3}).map((_, idx) => (
+            Array.from({ length: 3 }).map((_, idx) => (
               <li
                 key={idx}
                 className="animate-pulse bg-white rounded-xl p-6 border border-gray-100 shadow-sm"
@@ -119,20 +155,18 @@ export default function ReviewsPage({ params }: { params: Promise<{ productId: s
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-4">
                     <div className="bg-blue-100 text-blue-700 rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg">
-                      {review.author.charAt(0)}
+                      {review.authorName?.charAt(0) ?? "?"}
                     </div>
                     <div>
                       <div className="font-semibold text-lg text-gray-900">
-                        {review.author}
+                        {review.authorName ?? "Loading..."}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        Verified buyer
-                      </div>
+                      <div className="text-sm text-gray-500">Verified buyer</div>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center justify-end gap-1 text-yellow-400">
-                      {Array.from({length: 5}).map((_, i) => (
+                      {Array.from({ length: 5 }).map((_, i) => (
                         <svg
                           key={i}
                           className={`w-5 h-5 ${
@@ -146,18 +180,13 @@ export default function ReviewsPage({ params }: { params: Promise<{ productId: s
                         </svg>
                       ))}
                     </div>
-                    <div className="text-sm text-gray-600 mt-1">
-                      {review.rating}/5
-                    </div>
+                    <div className="text-sm text-gray-600 mt-1">{review.rating}/5</div>
                   </div>
                 </div>
-                <p className="text-gray-700 text-base leading-relaxed">
-                  {review.comment}
-                </p>
+                <p className="text-gray-700 text-base leading-relaxed">{review.comment}</p>
               </li>
             ))
           ) : (
-            // empty state
             <li className="bg-white rounded-xl p-6 border border-dashed border-gray-200 text-center text-gray-500">
               No reviews yet — be the first to leave feedback!
             </li>
